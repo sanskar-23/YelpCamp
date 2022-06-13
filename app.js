@@ -9,7 +9,7 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
     console.log("Dtabase Connected");
-})
+});
 
 const app = express(); // This is used to run the server of localhost
 
@@ -19,14 +19,18 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', (req, res) => {
     res.render("home.ejs"); // This is the home route which will serve as our home page
-})
+});
 
-app.get('/makecampground', async(req, res) => {
-    const camp = new Campground({ title: 'My backyard', description: "This is a very good campground" });
-    await camp.save();
-    res.send(camp);
-})
+app.get('/campgrounds', async(req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds });
+});
+
+app.get('/campgrounds/:id', async(req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    res.render('campgrounds/show', { campground });
+});
 
 app.listen(3000, () => {
     console.log('Serving on Port 3000!');
-})
+});
