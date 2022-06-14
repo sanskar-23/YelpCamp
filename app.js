@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
+const ejsMate = require('ejs-mate');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp'); // To connect with mongoose
 
@@ -14,6 +15,7 @@ db.once("open", () => {
 
 const app = express(); // This is used to run the server of localhost
 
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs'); // This is used for the ejs template view directory
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
