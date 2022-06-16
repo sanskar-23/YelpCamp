@@ -7,6 +7,7 @@ const ejsMate = require('ejs-mate');
 const reviews = require('./routes/reviews');
 const campgrounds = require('./routes/campgrounds');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp'); // To connect with mongoose
 
@@ -35,10 +36,19 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
+
 
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.get('/', (req, res) => {
     res.render("home.ejs"); // This is the home route which will serve as our home page
